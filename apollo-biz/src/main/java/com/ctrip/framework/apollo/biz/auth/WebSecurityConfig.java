@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.biz.auth;
 
 import com.ctrip.framework.apollo.common.condition.ConditionalOnMissingProfile;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -16,8 +16,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Value("${eureka.auth.enabled}")
+  private boolean eurekaEnabled;
+  @Value("${eureka.user.name}")
+  private String eurekaUserName;
+
+  @Value("${eureka.user.password}")
+  private String eurekaPassword;
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    if (eurekaEnabled) {
+      http.authorizeRequests().anyRequest().authenticated();
+    }
     http.httpBasic();
     http.csrf().disable();
     http.headers().frameOptions().sameOrigin();
@@ -32,8 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.inMemoryAuthentication().withUser("user").password("").roles("USER").and()
-        .withUser("apollo").password("").roles("USER", "ADMIN");
+    auth.inMemoryAuthentication().withUser(eurekaUserName).password(eurekaPassword).roles("USER", "ADMIN");
   }
 
 }

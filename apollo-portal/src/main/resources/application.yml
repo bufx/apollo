@@ -23,5 +23,10 @@ management:
   health:
     status:
       order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP
-
+eureka:
+  auth:
+    enabled: ${eureka_auth_enabled:false}
+  user:
+    name: ${eureka_user_name:apollo}
+    password: ${eureka_user_password:}
 

@@ -12,3 +12,10 @@ server:
 
 logging:
   file: /opt/logs/100003171/apollo-configservice.log
+
+eureka:
+  auth:
+    enabled: ${eureka_auth_enabled:false}
+  user:
+    name: ${eureka_user_name:apollo}
+    password: ${eureka_user_password:}
